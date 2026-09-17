@@ -3,3 +3,4 @@ onnuri.db
 data/*.csv
 __pycache__/
 !data/.gitkeep
+*.csv
