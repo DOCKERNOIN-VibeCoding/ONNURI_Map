@@ -15,9 +15,15 @@
     </header>
 
     <div id="controls">
-      <input id="q" type="search" placeholder="상호명 · 시장명 · 품목 검색" autocomplete="off">
+      <input id="q" type="search" placeholder="시장명 · 가맹점명 · 품목 검색" autocomplete="off">
       <label><input type="checkbox" id="paper"> 지류</label>
       <label><input type="checkbox" id="digital"> 디지털</label>
+    </div>
+
+    <div id="detail-head" hidden>
+      <button id="back">← 시장 목록</button>
+      <h2 id="detail-name"></h2>
+      <p id="detail-sub"></p>
     </div>
 
     <p id="hint"></p>

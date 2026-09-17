@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
-"""SQLite 스키마와 공용 접속 함수."""
+"""SQLite 스키마와 공용 접속 함수.
+
+공공데이터의 소재지가 시/도 단위뿐이라 가맹점별 좌표는 얻을 수 없다.
+그래서 좌표는 '시장·상점가'가 갖고, 가맹점은 소속 시장에 매달린다.
+"""
 
 import os
 import sqlite3
@@ -8,32 +12,31 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "onnuri.db")
 
 SCHEMA = """
-CREATE TABLE IF NOT EXISTS stores (
-    id       INTEGER PRIMARY KEY AUTOINCREMENT,
-    name     TEXT NOT NULL,
-    market   TEXT,
-    address  TEXT NOT NULL,
-    items    TEXT,
-    paper    INTEGER DEFAULT 0,
-    digital  INTEGER DEFAULT 0,
-    reg_year TEXT,
-    sido     TEXT,
-    sigungu  TEXT,
-    lat      REAL,
-    lng      REAL,
-    UNIQUE(name, market, address)
-);
-CREATE INDEX IF NOT EXISTS idx_stores_pos  ON stores(lat, lng);
-CREATE INDEX IF NOT EXISTS idx_stores_area ON stores(sido, sigungu);
-CREATE INDEX IF NOT EXISTS idx_stores_mkt  ON stores(market, sido);
-CREATE INDEX IF NOT EXISTS idx_stores_name ON stores(name);
-
-CREATE TABLE IF NOT EXISTS geocache (
-    address TEXT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS markets (
+    id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    name    TEXT NOT NULL,
+    sido    TEXT NOT NULL,
     lat     REAL,
     lng     REAL,
-    status  TEXT NOT NULL
+    sigungu TEXT,          -- 지오코딩으로 알아낸 시군구 (네이버 검색어에 사용)
+    address TEXT,          -- 지오코딩으로 알아낸 도로명 주소
+    status  TEXT,          -- ok | fail | NULL(미시도)
+    UNIQUE(name, sido)
 );
+CREATE INDEX IF NOT EXISTS idx_markets_pos ON markets(lat, lng);
+
+CREATE TABLE IF NOT EXISTS stores (
+    id        INTEGER PRIMARY KEY AUTOINCREMENT,
+    market_id INTEGER NOT NULL REFERENCES markets(id),
+    name      TEXT NOT NULL,
+    items     TEXT,
+    paper     INTEGER DEFAULT 0,
+    digital   INTEGER DEFAULT 0,
+    reg_year  TEXT,
+    UNIQUE(market_id, name)
+);
+CREATE INDEX IF NOT EXISTS idx_stores_market ON stores(market_id);
+CREATE INDEX IF NOT EXISTS idx_stores_name   ON stores(name);
 """
 
 
