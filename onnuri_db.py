@@ -21,10 +21,11 @@ CREATE TABLE IF NOT EXISTS stores (
     sigungu  TEXT,
     lat      REAL,
     lng      REAL,
-    UNIQUE(name, address)
+    UNIQUE(name, market, address)
 );
 CREATE INDEX IF NOT EXISTS idx_stores_pos  ON stores(lat, lng);
 CREATE INDEX IF NOT EXISTS idx_stores_area ON stores(sido, sigungu);
+CREATE INDEX IF NOT EXISTS idx_stores_mkt  ON stores(market, sido);
 CREATE INDEX IF NOT EXISTS idx_stores_name ON stores(name);
 
 CREATE TABLE IF NOT EXISTS geocache (

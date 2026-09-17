@@ -102,8 +102,7 @@ def main(path):
             INSERT INTO stores (name, market, address, items, paper, digital,
                                 reg_year, sido, sigungu)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ON CONFLICT(name, address) DO UPDATE SET
-                market   = excluded.market,
+            ON CONFLICT(name, market, address) DO UPDATE SET
                 items    = excluded.items,
                 paper    = excluded.paper,
                 digital  = excluded.digital,
