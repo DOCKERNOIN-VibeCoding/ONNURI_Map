@@ -1,0 +1,5 @@
+config.json
+onnuri.db
+data/*.csv
+__pycache__/
+!data/.gitkeep

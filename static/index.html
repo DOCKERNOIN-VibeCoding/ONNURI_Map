@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>온누리 가맹점 지도</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div id="layout">
+  <aside id="panel">
+    <header>
+      <h1>온누리 가맹점 지도</h1>
+      <p id="stats">불러오는 중…</p>
+    </header>
+
+    <div id="controls">
+      <input id="q" type="search" placeholder="상호명 · 시장명 · 품목 검색" autocomplete="off">
+      <label><input type="checkbox" id="paper"> 지류</label>
+      <label><input type="checkbox" id="digital"> 디지털</label>
+    </div>
+
+    <p id="hint"></p>
+    <ul id="list"></ul>
+  </aside>
+
+  <div id="map"></div>
+</div>
+
+<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=__KAKAO_JS_KEY__&libraries=clusterer&autoload=false"></script>
+<script>
+  if (typeof kakao === 'undefined') {
+    document.getElementById('map').innerHTML =
+      '<div style="padding:40px;line-height:1.8">카카오맵을 불러오지 못했습니다.<br>' +
+      'config.json 의 <b>kakao_js_key</b> 가 올바른지, 카카오 개발자 사이트에서 ' +
+      '<b>Web 플랫폼 도메인에 http://127.0.0.1:5173</b> 을 등록했는지 확인하세요.</div>';
+  }
+</script>
+<script src="/static/app.js"></script>
+</body>
+</html>

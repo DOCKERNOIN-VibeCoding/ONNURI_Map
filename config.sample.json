@@ -1,0 +1,5 @@
+{
+  "kakao_js_key": "카카오 JavaScript 키를 여기에 붙여넣으세요",
+  "kakao_rest_key": "카카오 REST API 키를 여기에 붙여넣으세요",
+  "port": 5173
+}
