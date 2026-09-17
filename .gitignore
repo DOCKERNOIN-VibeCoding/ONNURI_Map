@@ -1,6 +1,17 @@
+# 비밀키 - 절대 올리지 말 것
 config.json
-onnuri.db
-data/*.csv
-__pycache__/
-!data/.gitkeep
+.env
+
+# 데이터 - 용량이 크고 fetch_data.py 로 언제든 다시 만든다
+# onnuri.db* 는 WAL 모드가 만드는 -wal / -shm 까지 함께 걸러낸다
+onnuri.db*
 *.csv
+
+# 파이썬
+__pycache__/
+.venv/
+venv/
+
+# Windows / OneDrive
+desktop.ini
+Thumbs.db
