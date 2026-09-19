@@ -23,9 +23,9 @@ DOWNLOAD_URL = "https://www.data.go.kr/cmm/cmm/fileDownload.do"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
 
 
-def find_file_id(session):
+def find_file_id(session, dataset_url=DATASET_URL):
     """데이터셋 페이지에서 첨부파일 ID 를 찾는다."""
-    res = session.get(DATASET_URL, timeout=30)
+    res = session.get(dataset_url, timeout=30)
     res.raise_for_status()
     match = re.search(r"atchFileId=(FILE_\w+)&fileDetailSn=(\d+)", res.text)
     if not match:
@@ -50,6 +50,21 @@ def filename_from(headers, fallback):
     return re.sub(r'[\/:*?"<>|]', "_", name).strip()
 
 
+def download(session, dataset_url=DATASET_URL, fallback="공공데이터.csv"):
+    """데이터셋 페이지의 첨부 CSV 를 받아 (파일명, 내용) 으로 돌려준다."""
+    file_id, detail_sn = find_file_id(session, dataset_url)
+    res = session.get(
+        DOWNLOAD_URL,
+        params={"atchFileId": file_id, "fileDetailSn": detail_sn, "insertDataPrcus": "N"},
+        headers={"Referer": dataset_url},
+        timeout=180,
+    )
+    res.raise_for_status()
+    if b"," not in res.content[:2000]:
+        raise SystemExit("CSV 가 아닌 응답을 받았습니다. 잠시 후 다시 시도해 주세요.")
+    return filename_from(res.headers, fallback), res.content
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--import", dest="do_import", action="store_true",
@@ -60,27 +75,15 @@ def main():
     session.headers.update({"User-Agent": UA})
 
     print("데이터셋 페이지 확인 중…")
-    file_id, detail_sn = find_file_id(session)
-
-    print("다운로드 중…")
-    res = session.get(
-        DOWNLOAD_URL,
-        params={"atchFileId": file_id, "fileDetailSn": detail_sn, "insertDataPrcus": "N"},
-        headers={"Referer": DATASET_URL},
-        timeout=180,
-    )
-    res.raise_for_status()
-
-    if b"," not in res.content[:2000]:
-        raise SystemExit("CSV 가 아닌 응답을 받았습니다. 잠시 후 다시 시도해 주세요.")
+    name, content = download(session, fallback="온누리상품권_가맹점.csv")
 
     data_dir = os.path.join(onnuri_db.BASE_DIR, "data")
     os.makedirs(data_dir, exist_ok=True)
-    path = os.path.join(data_dir, filename_from(res.headers, "온누리상품권_가맹점.csv"))
+    path = os.path.join(data_dir, name)
 
     with open(path, "wb") as f:
-        f.write(res.content)
-    print(f"저장 완료: {path}  ({len(res.content) / 1024 / 1024:.1f} MB)")
+        f.write(content)
+    print(f"저장 완료: {path}  ({len(content) / 1024 / 1024:.1f} MB)")
 
     if args.do_import:
         import import_csv

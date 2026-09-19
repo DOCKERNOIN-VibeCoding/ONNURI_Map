@@ -1,10 +1,13 @@
 * { box-sizing: border-box; }
+/* #detail 처럼 display 를 지정한 요소는 ID 우선순위가 높아서
+   브라우저 기본 규칙([hidden]{display:none})을 이겨버린다. 그래서 못 박아둔다. */
+[hidden] { display: none !important; }
 body { margin: 0; font: 14px/1.5 "Malgun Gothic", "맑은 고딕", system-ui, sans-serif; color: #1c1c1e; }
 
 #layout { display: flex; height: 100vh; }
 #panel { width: 360px; flex: none; display: flex; flex-direction: column;
          border-right: 1px solid #e3e3e7; background: #fafafa; }
-#map { flex: 1; }
+#map { flex: 1; position: relative; }
 
 #panel header { padding: 16px 16px 10px; }
 #panel h1 { margin: 0; font-size: 17px; }
@@ -14,11 +17,38 @@ body { margin: 0; font: 14px/1.5 "Malgun Gothic", "맑은 고딕", system-ui, sa
 #controls input[type=search] { width: 100%; padding: 8px 10px; font-size: 14px;
                                border: 1px solid #d5d5da; border-radius: 6px; background: #fff; }
 #controls label { font-size: 13px; color: #48484c; cursor: pointer; }
+/* 거의 쓰지 않는 항목이라 한 줄 내려 작고 흐리게 둔다. */
+#controls #paper-only { flex-basis: 100%; font-size: 12px; color: #86868b; }
+#controls select { font-size: 13px; padding: 6px 8px; cursor: pointer;
+                   border: 1px solid #d5d5da; border-radius: 6px; background: #fff; }
 
-#detail-head { padding: 0 16px 10px; border-top: 1px solid #e3e3e7; padding-top: 12px; }
-#back { border: 0; background: none; padding: 0; font-size: 12px; color: #4a6cf0; cursor: pointer; }
-#detail-head h2 { margin: 6px 0 2px; font-size: 16px; }
+/* 시장을 고르면 옆으로 펼쳐지는 두 번째 패널 */
+#detail { width: 340px; flex: none; display: flex; flex-direction: column;
+          border-right: 1px solid #e3e3e7; background: #fff; }
+#detail header { position: relative; padding: 14px 40px 10px 16px; }
+#detail h2 { margin: 0 0 3px; font-size: 16px; }
 #detail-sub { margin: 0; font-size: 12px; color: #77777c; }
+#detail-count { margin: 6px 0 0; font-size: 12px; color: #4a6cf0; font-weight: 600; }
+#back { position: absolute; top: 10px; right: 10px; border: 0; background: none;
+        font-size: 20px; line-height: 1; color: #9a9a9f; cursor: pointer; padding: 2px 6px; }
+#back:hover { color: #1c1c1e; }
+
+#detail-list { flex: 1; overflow-y: auto; margin: 0; padding: 0; list-style: none;
+               border-top: 1px solid #e3e3e7; }
+#detail-list li { padding: 10px 16px; border-bottom: 1px solid #ededf0; }
+#detail-list li.store { cursor: pointer; }
+#detail-list li.store:hover { background: #f5f7fb; }
+#detail-list li.sel { background: #eaf0ff; box-shadow: inset 3px 0 0 #4a6cf0; }
+#detail-list .nm { font-weight: 600; }
+#detail-list .sub { font-size: 12px; color: #77777c; margin-top: 2px; }
+#detail-list .row { display: flex; align-items: flex-start; gap: 8px; }
+#detail-list .row > div { flex: 1; min-width: 0; }
+
+/* 식당 / 그 외 구분선 */
+#detail-list li.sect { padding: 7px 16px; background: #f4f4f7; border-bottom: 1px solid #e3e3e7;
+                       font-size: 11px; font-weight: 700; color: #6b6b70; letter-spacing: .3px;
+                       position: sticky; top: 0; cursor: default; }
+#detail-list li.sect.food { background: #fdf0ec; color: #b8431f; }
 
 #hint { margin: 0; padding: 0 16px 8px; font-size: 12px; color: #8a8a8f; }
 
@@ -36,8 +66,8 @@ body { margin: 0; font: 14px/1.5 "Malgun Gothic", "맑은 고딕", system-ui, sa
 
 .badge { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 10px;
          margin-left: 4px; vertical-align: 1px; }
-.badge.p { background: #e8f0fe; color: #1a56c4; }
-.badge.d { background: #e6f6ec; color: #17803d; }
+/* 지류 전용은 '주의해서 봐야 할 예외'라 파랑·초록이 아닌 경고색을 쓴다. */
+.badge.paper-only { background: #fdf0e3; color: #a2541a; }
 
 .naver-btn { flex: none; font-size: 11px; padding: 5px 8px; border-radius: 6px;
              background: #03c75a; color: #fff; text-decoration: none; font-weight: 600;
@@ -55,3 +85,28 @@ body { margin: 0; font: 14px/1.5 "Malgun Gothic", "맑은 고딕", system-ui, sa
                  color: #1c1c1e; text-decoration: none; cursor: pointer; }
 .pop .close { position: absolute; top: 6px; right: 8px; border: 0; background: none;
               font-size: 17px; color: #9a9a9f; cursor: pointer; padding: 0; }
+
+/* 줌인했을 때 찍히는 가맹점 핀 */
+.spin { width: 14px; height: 14px; border-radius: 50%; background: #7a8aa0;
+        border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35); cursor: pointer; }
+.spin.food { background: #f2643c; }
+.spin.many { width: auto; min-width: 22px; height: 22px; border-radius: 11px; padding: 0 5px;
+             color: #fff; font-size: 11px; font-weight: 700; line-height: 18px;
+             text-align: center; }
+.spin:hover { outline: 2px solid rgba(74,108,240,.5); }
+
+/* 한 좌표에 여러 가맹점이 있을 때 말풍선 안 목록 */
+.pop .slist { max-height: 240px; overflow-y: auto; margin: 8px 0 0; padding: 0; }
+.pop .slist li { list-style: none; padding: 7px 0; border-top: 1px solid #ededf0;
+                 display: flex; gap: 8px; align-items: flex-start; }
+.pop .slist .nm { font-size: 13px; font-weight: 600; flex: 1; min-width: 0; }
+.pop .slist .cat { font-size: 11px; color: #77777c; font-weight: 400; margin-top: 2px; }
+
+/* 지도 위 범례 */
+#legend { position: absolute; left: 12px; bottom: 12px; z-index: 3; background: rgba(255,255,255,.94);
+          border: 1px solid #d5d5da; border-radius: 6px; padding: 7px 10px; font-size: 11px;
+          color: #55555a; box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+#legend span { display: inline-flex; align-items: center; gap: 5px; margin-right: 10px; }
+#legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+#legend i.food { background: #f2643c; }
+#legend i.etc { background: #7a8aa0; }
