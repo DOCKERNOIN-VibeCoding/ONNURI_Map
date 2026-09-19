@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>온누리 가맹점 지도</title>
-<link rel="stylesheet" href="/static/style.css">
+<link rel="stylesheet" href="/static/style.css?v=__V__">
 </head>
 <body>
 <div id="layout">
@@ -16,21 +16,32 @@
 
     <div id="controls">
       <input id="q" type="search" placeholder="시장명 · 가맹점명 · 품목 검색" autocomplete="off">
-      <label><input type="checkbox" id="paper"> 지류</label>
-      <label><input type="checkbox" id="digital"> 디지털</label>
-    </div>
-
-    <div id="detail-head" hidden>
-      <button id="back">← 시장 목록</button>
-      <h2 id="detail-name"></h2>
-      <p id="detail-sub"></p>
+      <label title="업종이 '음식'으로 확인된 가맹점만 보여줍니다">
+        <input type="checkbox" id="food"> 식당만</label>
+      <select id="cat" title="식당 종류로 거릅니다">__CAT_OPTIONS__</select>
+      <label id="paper-only" title="디지털(모바일·카드) 온누리가 안 되고 지류만 받는 가맹점을 뺍니다. 전체의 9.5%입니다.">
+        <input type="checkbox" id="digital" checked> 지류만 가능한 곳 제외</label>
     </div>
 
     <p id="hint"></p>
     <ul id="list"></ul>
   </aside>
 
-  <div id="map"></div>
+  <aside id="detail" hidden>
+    <header>
+      <button id="back" title="닫기">&times;</button>
+      <h2 id="detail-name"></h2>
+      <p id="detail-sub"></p>
+      <p id="detail-count"></p>
+    </header>
+    <ul id="detail-list"></ul>
+  </aside>
+
+  <div id="map">
+    <div id="legend" hidden>
+      <span><i class="food"></i>식당</span><span><i class="etc"></i>그 외</span>
+    </div>
+  </div>
 </div>
 
 <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=__KAKAO_JS_KEY__&libraries=clusterer&autoload=false"></script>
@@ -42,6 +53,6 @@
       '<b>Web 플랫폼 도메인에 http://127.0.0.1:5173</b> 을 등록했는지 확인하세요.</div>';
   }
 </script>
-<script src="/static/app.js"></script>
+<script src="/static/app.js?v=__V__"></script>
 </body>
 </html>

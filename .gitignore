@@ -6,6 +6,7 @@ config.json
 # onnuri.db* 는 WAL 모드가 만드는 -wal / -shm 까지 함께 걸러낸다
 onnuri.db*
 *.csv
+*.zip
 
 # 파이썬
 __pycache__/
@@ -15,3 +16,6 @@ venv/
 # Windows / OneDrive
 desktop.ini
 Thumbs.db
+
+# 참고 자료 - 용량 큰 파일이 들어있다, 올리지 않는다
+Reference/
